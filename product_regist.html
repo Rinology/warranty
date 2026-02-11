@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>제품 등록 시스템</title>
+<title>퀄리스포츠 제품 등록 시스템</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root { --ci-blue: #2f6286; --ci-green: #72bf44; --ci-dark: #231f20; --ci-white: #ffffff; }
@@ -98,7 +98,7 @@
 <body oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
 <div class="inquiry-container">
   <div class="nav-header"><a href="./main.html" class="home-btn">🏠 메인으로</a></div>
-  <h2>제품 등록 및 보증 연장</h2>
+  <h2>퀄리스포츠 제품 등록 및 보증 연장</h2>
   
   <form id="registForm">
     <div class="agree-all-box">
@@ -110,12 +110,12 @@
     <div class="term-item"><label class="term-label"><input type="checkbox" id="marketingAgree" class="agree-item"> 마케팅 정보 수신 동의 <span class="optional-mark">(선택)</span></label><button type="button" class="term-view-btn" onclick="openModal('modalMarketing')">내용보기</button></div>
 
     <div class="form-group" style="margin-top:20px;">
-      <label for="serialNo">제품 번호 (차대번호) <span class="required-mark">*</span></label>
-      <div class="serial-guide-box"><img src="https://placehold.co/400x150/png?text=Serial+Number+Location" alt="차대번호 예시"><div class="serial-guide-text">💡 프레임 하단, 혹은 배터리 안쪽 라벨을 확인해주세요.</div></div>
+      <label for="serialNo">제품 번호(차대번호) <span class="required-mark">*</span></label>
+      <div class="serial-guide-box"><img src="https://placehold.co/400x150/png?text=Serial+Number+Location" alt="차대번호 예시"><div class="serial-guide-text">💡 제품별로 차대번호 각인 위치가 다릅니다.</div></div>
       
       <div class="input-wrapper">
-        <div id="stepBadge" class="step-badge">👈 1단계: 먼저 조회해주세요!</div>
-        <input type="text" id="serialNo" class="highlight-input" placeholder="시리얼 번호를 먼저 입력해주세요" autocomplete="off">
+        <div id="stepBadge" class="step-badge">먼저 조회해주세요!</div>
+        <input type="text" id="serialNo" class="highlight-input" placeholder="차대번호를 먼저 입력해주세요" autocomplete="off">
         <button type="button" id="btnCheckSerial" class="check-btn">조회</button>
       </div>
       <p id="serialError" class="error-msg">올바른 형식이 아닙니다.</p>

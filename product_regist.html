@@ -1,194 +1,274 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>제품 등록 시스템</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>제품 등록 시스템</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#2f6286">
 </head>
+
 <body>
-<div class="inquiry-container regist-container">
-  <div class="nav-header"><a href="./main.html" class="home-btn">🏠 메인으로</a></div>
-  <h2>제품 등록 및 보증 연장</h2>
-  
-  <form id="registForm">
-    
-    <!-- 통합된 약관 동의 UI (그룹화) -->
-    <div class="terms-container">
-      <div class="terms-header">
-        <label class="agree-all-label"><input type="checkbox" id="allAgree"> 약관 전체 동의하기</label>
+  <div class="inquiry-container regist-container">
+    <div class="nav-header"><a href="./main.html" class="home-btn">🏠 메인으로</a></div>
+    <h2>제품 등록 및 보증 연장</h2>
+
+    <!-- Stepper Indicator -->
+    <div class="stepper-wrapper">
+      <div class="step-item active" id="step1-tab">
+        <div class="step-circle">1</div>
+        <div class="step-label">약관 동의</div>
       </div>
-      <div class="terms-body">
-        <div class="terms-row">
-          <label><input type="checkbox" id="privacyAgree" class="agree-item"> 개인정보 수집 및 이용 동의 <span class="badge-req">(필수)</span></label>
-          <button type="button" class="btn-view-term" onclick="openModal('modalPrivacy')">내용보기</button>
-        </div>
-        <div class="terms-row">
-          <label><input type="checkbox" id="thirdPartyAgree" class="agree-item"> 개인정보 제3자 제공 동의 <span class="badge-req">(필수)</span></label>
-          <button type="button" class="btn-view-term" onclick="openModal('modalThird')">내용보기</button>
-        </div>
-        <!-- [NEW] 국외 이전 동의 -->
-        <div class="terms-row">
-          <label><input type="checkbox" id="transferAgree" class="agree-item"> 개인정보 국외 이전 동의 <span class="badge-req">(필수)</span></label>
-          <button type="button" class="btn-view-term" onclick="openModal('modalTransfer')">내용보기</button>
-        </div>
-        <div class="terms-row">
-          <label><input type="checkbox" id="marketingAgree" class="agree-item"> 마케팅 정보 수신 동의 <span class="badge-opt">(선택)</span></label>
-          <button type="button" class="btn-view-term" onclick="openModal('modalMarketing')">내용보기</button>
-        </div>
+      <div class="step-line"></div>
+      <div class="step-item" id="step2-tab">
+        <div class="step-circle">2</div>
+        <div class="step-label">제품 인증</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-item" id="step3-tab">
+        <div class="step-circle">3</div>
+        <div class="step-label">정보 입력</div>
       </div>
     </div>
 
-    <div class="form-group" style="margin-top:20px;">
-      <label for="serialNo">제품 번호(차대번호) <span class="required-mark">*</span></label>
-      <div class="serial-guide-box"><img src="https://placehold.co/400x150/png?text=Serial+Number+Location" alt="차대번호 예시"><div class="serial-guide-text">💡 제품별로 차대번호 각인 위치가 다릅니다.</div></div>
-      
-      <div class="input-wrapper">
-        <div id="stepBadge" class="step-badge">먼저 조회해주세요!</div>
-        <input type="text" id="serialNo" class="highlight-input" placeholder="차대번호를 먼저 입력해주세요" autocomplete="off">
-        <button type="button" id="btnCheckSerial" class="check-btn">조회</button>
+    <form id="registForm">
+
+      <!-- STEP 1: Terms -->
+      <div class="form-step active" id="step1">
+        <div class="step-title">서비스 이용을 위해 약관에 동의해주세요.</div>
+        <div class="terms-container">
+          <div class="terms-header">
+            <label class="agree-all-label"><input type="checkbox" id="allAgree"> 약관 전체 동의하기</label>
+          </div>
+          <div class="terms-body">
+            <div class="terms-row">
+              <label><input type="checkbox" id="privacyAgree" class="agree-item"> 개인정보 수집 및 이용 동의 <span
+                  class="badge-req">(필수)</span></label>
+              <button type="button" class="btn-view-term" onclick="openModal('modalPrivacy')">내용보기</button>
+            </div>
+            <div class="terms-row">
+              <label><input type="checkbox" id="thirdPartyAgree" class="agree-item"> 개인정보 제3자 제공 동의 <span
+                  class="badge-req">(필수)</span></label>
+              <button type="button" class="btn-view-term" onclick="openModal('modalThird')">내용보기</button>
+            </div>
+            <div class="terms-row">
+              <label><input type="checkbox" id="transferAgree" class="agree-item"> 개인정보 국외 이전 동의 <span
+                  class="badge-req">(필수)</span></label>
+              <button type="button" class="btn-view-term" onclick="openModal('modalTransfer')">내용보기</button>
+            </div>
+            <div class="terms-row">
+              <label><input type="checkbox" id="marketingAgree" class="agree-item"> 마케팅 정보 수신 동의 <span
+                  class="badge-opt">(선택)</span></label>
+              <button type="button" class="btn-view-term" onclick="openModal('modalMarketing')">내용보기</button>
+            </div>
+          </div>
+        </div>
+        <div class="step-btns">
+          <button type="button" class="next-btn" onclick="nextStep(2)">다음 단계로 <span class="arrow">→</span></button>
+        </div>
       </div>
-      <p id="serialError" class="error-msg">올바른 형식이 아닙니다.</p>
-    </div>
 
-    <div class="form-row">
-      <div class="form-group"><label for="userName">이름 <span class="required-mark">*</span></label><input type="text" id="userName" placeholder="성함 입력" autocomplete="off"></div>
-      <div class="form-group"><label for="userPhone">전화번호 <span class="required-mark">*</span></label><input type="text" id="userPhone" placeholder="010-0000-0000" maxlength="13" autocomplete="off"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label for="productSelect">구입 제품 모델 <span class="required-mark">*</span></label><select id="productSelect"><option value="">불러오는 중...</option></select></div>
-      <div class="form-group">
-        <label for="storeInput">구입 매장 (검색) <span class="required-mark">*</span></label>
-        <input type="text" id="storeInput" placeholder="매장명, 대리점명, 주소 검색" autocomplete="off">
-        <input type="hidden" id="storeCode"><ul id="suggestions" class="suggestions-list"></ul><div id="storeInfoDisplay" class="store-info-display"></div>
+      <!-- STEP 2: Product Auth -->
+      <div class="form-step" id="step2">
+        <div class="step-title">제품의 차대번호를 입력해주세요.</div>
+        <div class="form-group">
+          <label for="serialNo">제품 번호(차대번호) <span class="required-mark">*</span></label>
+          <div class="serial-guide-box"><img src="https://placehold.co/400x150/png?text=Serial+Number+Location"
+              alt="차대번호 예시">
+            <div class="serial-guide-text">💡 제품별로 차대번호 각인 위치가 다릅니다.</div>
+          </div>
+
+          <div class="input-wrapper">
+            <div id="stepBadge" class="step-badge">조회 버튼을 눌러주세요</div>
+            <input type="text" id="serialNo" class="highlight-input" placeholder="차대번호 직접 입력" autocomplete="off">
+            <button type="button" id="btnCheckSerial" class="check-btn">조회</button>
+          </div>
+          <p id="serialError" class="error-msg"></p>
+        </div>
+        <div class="step-btns">
+          <button type="button" class="back-btn" onclick="nextStep(1)">이전</button>
+          <button type="button" class="next-btn" id="btnStep2Next" onclick="nextStep(3)" disabled>인증 완료 및 다음 <span
+              class="arrow">→</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 3: User Info & Receipt -->
+      <div class="form-step" id="step3">
+        <div class="step-title">상세 구매 정보를 입력해주세요.</div>
+        <div class="form-row">
+          <div class="form-group"><label for="userName">이름 <span class="required-mark">*</span></label><input
+              type="text" id="userName" placeholder="성함 입력" autocomplete="off"></div>
+          <div class="form-group"><label for="userPhone">전화번호 <span class="required-mark">*</span></label><input
+              type="text" id="userPhone" placeholder="010-0000-0000" maxlength="13" autocomplete="off"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="productSelect">구입 제품 모델 <span
+                class="required-mark">*</span></label><select id="productSelect">
+              <option value="">불러오는 중...</option>
+            </select></div>
+          <div class="form-group">
+            <label for="storeInput">구입 매장 (검색) <span class="required-mark">*</span></label>
+            <input type="text" id="storeInput" placeholder="매장명 또는 주소 검색" autocomplete="off">
+            <input type="hidden" id="storeCode">
+            <ul id="suggestions" class="suggestions-list"></ul>
+            <div id="storeInfoDisplay" class="store-info-display"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="receiptFile">구매 영수증 첨부 (이미지) <span class="required-mark">*</span></label>
+          <input type="file" id="receiptFile" accept="image/jpeg,image/png,application/pdf">
+          <img id="imgPreview">
+          <div class="file-info-text">* 3MB 이하의 JPG, PNG, PDF 파일만 업로드 가능합니다.</div>
+        </div>
+
+        <div class="step-btns">
+          <button type="button" class="back-btn" onclick="nextStep(2)">이전</button>
+          <button type="button" class="submit-btn">등록 신청하기</button>
+        </div>
+      </div>
+
+      <div id="loadingArea" class="loading-container">
+        <div class="spinner"></div>
+        <div id="loadingText" class="loading-msg">데이터 처리 중입니다...</div>
+        <div id="waitText" class="wait-msg">잠시만 기다려주세요.</div>
+      </div>
+    </form>
+    <div class="footer-logo"><img src="https://via.placeholder.com/150x40/231f20/ffffff?text=QUALI+SPORTS"
+        alt="QUALI SPORTS"></div>
+  </div>
+
+  <!-- 모달 영역 -->
+  <div id="modalPrivacy" class="modal-overlay" onclick="closeModal('modalPrivacy')">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header">[필수]개인정보 수집 및 이용 동의 <button class="modal-close"
+          onclick="closeModal('modalPrivacy')">&times;</button>
+      </div>
+      <div class="modal-content">
+        퀄리스포츠(이하 “회사”)는 고객님의 제품등록 및 보증연장 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.
+
+        1) 수집·이용 목적
+
+        (1) 제품 정품 등록 확인 및 등록내역 관리
+        (2) 보증기간 연장 서비스 제공 및 보증 적용/관리
+        (3) A/S 접수·처리 시 고객 확인 및 이력 관리
+        (4) 제품 안전관리 및 중요 업데이트 안내(리콜·안전점검 등)
+
+        2) 수집 항목
+
+        성명, 휴대전화번호, 차대번호, 구입 모델, 구입 매장 정보(매장명/매장코드 등), 구매영수증 파일(이미지/PDF), 등록/처리 과정에서 생성되는 등록일자·처리결과 등
+
+        3) 보유·이용 기간
+
+        A/S 최종 처리일로부터 3년 또는 관계 법령에 따른 보존기간. 목적 달성 또는 동의 철회 시 지체 없이 파기
+
+        4)동의 거부 권리 및 불이익
+
+        동의를 거부할 권리가 있으나, 동의하지 않을 경우 제품등록 및 보증연장 서비스 제공이 제한될 수 있습니다.
+      </div>
+      <div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalPrivacy')">확인</button>
       </div>
     </div>
-    <div class="form-group">
-      <label for="receiptFile">구매 영수증 첨부 (이미지) <span class="required-mark">*</span></label>
-      <input type="file" id="receiptFile" accept="image/jpeg,image/png,application/pdf">
-      <img id="imgPreview">
-      <div style="font-size:11px; color:#e74c3c; margin-top:5px; font-weight:bold;">* 3MB 이하의 JPG, PNG, PDF 파일만 업로드 가능합니다.</div>
-    </div>
-
-    <button type="button" class="submit-btn">등록 신청하기</button>
-    <div id="loadingArea" class="loading-container"><div class="spinner"></div><div id="loadingText" class="loading-msg">사진 업로드 및 등록 중입니다...</div><div id="waitText" class="wait-msg">잠시만 기다려주세요.</div></div>
-  </form>
-  <div class="footer-logo"><img src="https://via.placeholder.com/150x40/231f20/ffffff?text=QUALI+SPORTS" alt="QUALI SPORTS"></div>
-</div>
-
-<!-- 모달 영역 -->
-<div id="modalPrivacy" class="modal-overlay" onclick="closeModal('modalPrivacy')"><div class="modal-box" onclick="event.stopPropagation()">
-  <div class="modal-header">[필수]개인정보 수집 및 이용 동의 <button class="modal-close" onclick="closeModal('modalPrivacy')">&times;</button>
-  </div>
-  <div class="modal-content">
-퀄리스포츠(이하 “회사”)는 고객님의 제품등록 및 보증연장 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.
-
-1) 수집·이용 목적
-
-(1) 제품 정품 등록 확인 및 등록내역 관리
-(2) 보증기간 연장 서비스 제공 및 보증 적용/관리
-(3) A/S 접수·처리 시 고객 확인 및 이력 관리
-(4) 제품 안전관리 및 중요 업데이트 안내(리콜·안전점검 등)
-     
-2) 수집 항목
-
-성명, 휴대전화번호, 차대번호, 구입 모델, 구입 매장 정보(매장명/매장코드 등), 구매영수증 파일(이미지/PDF), 등록/처리 과정에서 생성되는 등록일자·처리결과 등
-     
-3) 보유·이용 기간
-
-A/S 최종 처리일로부터 3년 또는 관계 법령에 따른 보존기간. 목적 달성 또는 동의 철회 시 지체 없이 파기
-     
-4)동의 거부 권리 및 불이익
-
-동의를 거부할 권리가 있으나, 동의하지 않을 경우 제품등록 및 보증연장 서비스 제공이 제한될 수 있습니다.
-  </div>
-    <div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalPrivacy')">확인</button>
-    </div>
-  </div>
   </div>
 
-<div id="modalThird" class="modal-overlay" onclick="closeModal('modalThird')">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <div class="modal-header">[필수]개인정보 제3자 제공 동의 <button class="modal-close" onclick="closeModal('modalThird')">&times;</button>
-    </div>
-    <div class="modal-content">
-회사는 현재 퀄리스포츠 및 ㈜엑스트론 인력이 통합적으로 A/S·품질·안전업무를 수행하고 있고, 
-향후 사업이 ㈜엑스트론으로 이관될 수 있어, 동일 목적 범위 내에서 아래와 같이 개인정보를 제공할 수 있습니다.
-     
-(1) 제공받는 자: ㈜엑스트론
-(2) 제공 목적: 제품등록 확인, 보증연장 적용/관리, A/S 및 고객확인, 안전공지(리콜 포함) 수행
-(3) 제공 항목: 성명, 전화번호, 차대번호, 구매 모델, 구입 매장 정보, 구매영수증 파일, 등록/처리 정보
-(4) 보유·이용 기간: A/S 최종 처리일로부터 3년(또는 법령상 보존기간)
-(5) 동의 거부 권리 및 불이익: 동의를 거부할 수 있으나, ㈜엑스트론이 수행하는 A/S·보증·안전업무 처리가 제한될 수 있습니다.
-    </div>
+  <div id="modalThird" class="modal-overlay" onclick="closeModal('modalThird')">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header">[필수]개인정보 제3자 제공 동의 <button class="modal-close"
+          onclick="closeModal('modalThird')">&times;</button>
+      </div>
+      <div class="modal-content">
+        회사는 현재 퀄리스포츠 및 ㈜엑스트론 인력이 통합적으로 A/S·품질·안전업무를 수행하고 있고,
+        향후 사업이 ㈜엑스트론으로 이관될 수 있어, 동일 목적 범위 내에서 아래와 같이 개인정보를 제공할 수 있습니다.
+
+        (1) 제공받는 자: ㈜엑스트론
+        (2) 제공 목적: 제품등록 확인, 보증연장 적용/관리, A/S 및 고객확인, 안전공지(리콜 포함) 수행
+        (3) 제공 항목: 성명, 전화번호, 차대번호, 구매 모델, 구입 매장 정보, 구매영수증 파일, 등록/처리 정보
+        (4) 보유·이용 기간: A/S 최종 처리일로부터 3년(또는 법령상 보존기간)
+        (5) 동의 거부 권리 및 불이익: 동의를 거부할 수 있으나, ㈜엑스트론이 수행하는 A/S·보증·안전업무 처리가 제한될 수 있습니다.
+      </div>
       <div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalThird')">확인</button>
       </div>
     </div>
   </div>
 
-<!-- [NEW] 국외 이전 동의 모달 -->
-<div id="modalTransfer" class="modal-overlay" onclick="closeModal('modalTransfer')"><div class="modal-box" onclick="event.stopPropagation()">
-  <div class="modal-header">[필수]개인정보 국외 이전 동의 <button class="modal-close" onclick="closeModal('modalTransfer')">&times;</button>
-  </div>
-  <div class="modal-content">
-회사는 글로벌 클라우드 인프라를 활용하여 데이터를 안전하게 보관하고 관리하기 위해 다음과 같이 개인정보를 국외로 이전합니다.
+  <!-- [NEW] 국외 이전 동의 모달 -->
+  <div id="modalTransfer" class="modal-overlay" onclick="closeModal('modalTransfer')">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header">[필수]개인정보 국외 이전 동의 <button class="modal-close"
+          onclick="closeModal('modalTransfer')">&times;</button>
+      </div>
+      <div class="modal-content">
+        회사는 글로벌 클라우드 인프라를 활용하여 데이터를 안전하게 보관하고 관리하기 위해 다음과 같이 개인정보를 국외로 이전합니다.
 
-1. 이전되는 국가 및 일시
-국가: 싱가포르 및 전세계 구글 데이터센터 소재지
-일시: 제품 등록 완료 및 데이터 입력 시 수시 전송
+        1. 이전되는 국가 및 일시
+        국가: 싱가포르 및 전세계 구글 데이터센터 소재지
+        일시: 제품 등록 완료 및 데이터 입력 시 수시 전송
 
-2. 이전받는 자
-Google Asia Pacific Pte. Ltd. (구글)
-연락처: https://www.google.com/contact
+        2. 이전받는 자
+        Google Asia Pacific Pte. Ltd. (구글)
+        연락처: https://www.google.com/contact
 
-3. 이전되는 개인정보 항목
-수집된 개인정보 및 제품 등록 정보 전 항목 (성명, 연락처, 차대번호, 모델명, 구매 증빙 이미지 등)
+        3. 이전되는 개인정보 항목
+        수집된 개인정보 및 제품 등록 정보 전 항목 (성명, 연락처, 차대번호, 모델명, 구매 증빙 이미지 등)
 
-4. 이전 방법 및 목적
-방법: 전용 클라우드 네트워크(Google AppSheet / GAS)를 통한 암호화 전송
-목적: 서비스 운영을 위한 데이터 저장, 시스템 유지보수 및 기술 지원
+        4. 이전 방법 및 목적
+        방법: 전용 클라우드 네트워크(Google AppSheet / GAS)를 통한 암호화 전송
+        목적: 서비스 운영을 위한 데이터 저장, 시스템 유지보수 및 기술 지원
 
-5. 이전받는 자의 보유 및 이용 기간
-개인정보 수집·이용 동의 기간과 동일 (서비스 탈퇴 시 또는 목적 달성 시까지)
+        5. 이전받는 자의 보유 및 이용 기간
+        개인정보 수집·이용 동의 기간과 동일 (서비스 탈퇴 시 또는 목적 달성 시까지)
 
-6. 동의 거부 권리 및 불이익
-본 서비스는 구글의 클라우드 시스템을 기반으로 운영되므로, 국외 이전에 동의하지 않으실 경우 제품 등록 서비스 이용이 불가능합니다.
-  </div>
-    <div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalTransfer')">확인</button>
+        6. 동의 거부 권리 및 불이익
+        본 서비스는 구글의 클라우드 시스템을 기반으로 운영되므로, 국외 이전에 동의하지 않으실 경우 제품 등록 서비스 이용이 불가능합니다.
+      </div>
+      <div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalTransfer')">확인</button>
+      </div>
     </div>
   </div>
-</div>
 
-<div id="modalMarketing" class="modal-overlay" onclick="closeModal('modalMarketing')">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <div class="modal-header">[선택]마케팅 정보 수신 동의 <button class="modal-close" onclick="closeModal('modalMarketing')">&times;</button>
-    </div>
-    <div class="modal-content">
-제품 / 이벤트 / 프로모션 / 부가혜택 안내 등 광고성 정보 제공을 위해 성명, 연락처를 활용하여 카카오톡 / 문자(SMS/MMS) 카카오톡(알림톡/친구톡)로 받는 것에 동의합니다. 
-미동의 시에도 제품등록 및 보증연장 서비스 이용은 가능합니다. 다만 프로모션/부가혜택 안내 및 일부 이벤트 참여는 제한될 수 있습니다.
-     
-1) 목적: 신제품 출시, 이벤트 및 프로모션 안내, 부가혜택 정보 제공
-2) 수집항목: 성명, 전화번호
-3) 수신 채널: 카카오톡(알림톡/친구톡), 문자(SMS/MMS)
-4) 보유·이용 기간: 동의 철회 시 또는 서비스 종료시까지
-5) 철회 방법: 카카오톡 수신거부/문자 내 수신거부/ 고객센터 문의를 통해 요청
-    </div>
-    <div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalMarketing')">확인</button>
+  <div id="modalMarketing" class="modal-overlay" onclick="closeModal('modalMarketing')">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header">[선택]마케팅 정보 수신 동의 <button class="modal-close"
+          onclick="closeModal('modalMarketing')">&times;</button>
+      </div>
+      <div class="modal-content">
+        제품 / 이벤트 / 프로모션 / 부가혜택 안내 등 광고성 정보 제공을 위해 성명, 연락처를 활용하여 카카오톡 / 문자(SMS/MMS) 카카오톡(알림톡/친구톡)로 받는 것에 동의합니다.
+        미동의 시에도 제품등록 및 보증연장 서비스 이용은 가능합니다. 다만 프로모션/부가혜택 안내 및 일부 이벤트 참여는 제한될 수 있습니다.
+
+        1) 목적: 신제품 출시, 이벤트 및 프로모션 안내, 부가혜택 정보 제공
+        2) 수집항목: 성명, 전화번호
+        3) 수신 채널: 카카오톡(알림톡/친구톡), 문자(SMS/MMS)
+        4) 보유·이용 기간: 동의 철회 시 또는 서비스 종료시까지
+        5) 철회 방법: 카카오톡 수신거부/문자 내 수신거부/ 고객센터 문의를 통해 요청
+      </div>
+      <div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalMarketing')">확인</button>
+      </div>
     </div>
   </div>
-</div>
 
-<div id="systemAlert" class="modal-overlay">
-  <div class="modal-box" style="max-width: 350px; text-align: center;">
-    <div class="modal-header" style="justify-content: center;">알림</div>
-    <div class="modal-content" style="padding: 30px 20px; font-size: 15px; word-break: keep-all;"><span id="systemAlertMsg"></span></div>
-    <div class="modal-footer" style="justify-content: center;"><button class="modal-btn" id="systemAlertBtn">확인</button></div>
+  <div id="systemAlert" class="modal-overlay">
+    <div class="modal-box" style="max-width: 350px; text-align: center;">
+      <div class="modal-header" style="justify-content: center;">알림</div>
+      <div class="modal-content" style="padding: 30px 20px; font-size: 15px; word-break: keep-all;"><span
+          id="systemAlertMsg"></span></div>
+      <div class="modal-footer" style="justify-content: center;"><button class="modal-btn"
+          id="systemAlertBtn">확인</button></div>
+    </div>
   </div>
-</div>
 
-<!-- 스크립트 로드 순서: 공통 -> 등록 로직 -->
-<script src="./js/common.js"></script>
-<script src="./js/regist.js"></script>
+  <!-- 스크립트 로드 순서: 공통 -> 등록 로직 -->
+  <script src="./js/common.js"></script>
+  <script src="./js/regist.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js');
+      });
+    }
+  </script>
 </body>
+
 </html>

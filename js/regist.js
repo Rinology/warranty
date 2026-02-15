@@ -1,12 +1,15 @@
 /**
- * 제품 등록 및 보증 연장 페이지 로직
+ * 제품 등록 및 보증 연장 페이지 로직 (Stepper 적용)
  */
 
 // 전역 변수 설정
 const MAX_FILE_SIZE = 3 * 1024 * 1024;
 let ALL_STORES = [];
 let STORE_DATA_MAP = {}; 
-window.GLOBAL_RETRY_COUNT = 0; // common.js에서 재시도 카운트 표시용
+let CURRENT_STEP = 1;
+// 차대번호 인증 상태 (false: 미인증, true: 인증완료)
+let IS_SERIAL_VERIFIED = false; 
+window.GLOBAL_RETRY_COUNT = 0;
 
 // 시스템 알림창 표시
 function showAlert(message, callback) {
@@ -26,14 +29,8 @@ function showAlert(message, callback) {
 // 초기화 및 이벤트 리스너 설정
 window.addEventListener("pageshow", function(event) {
     if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
-        document.getElementById("registForm").reset();
-        document.getElementById("storeInfoDisplay").style.display = "none";
-        document.getElementById("serialError").style.display = "none";
-        document.getElementById("imgPreview").style.display = "none";
-        setButtonState(true);
-        document.getElementById("loadingArea").style.display = "none";
-        document.getElementById("serialNo").classList.add("highlight-input");
-        document.getElementById("stepBadge").style.display = "block";
+        // 뒤로가기 등으로 돌아왔을 때 안전하게 새로고침
+        window.location.reload();
     }
 });
 
@@ -41,11 +38,12 @@ document.addEventListener("DOMContentLoaded", function() {
     // 1. 초기 데이터 로드 (제품 목록, 매장 목록)
     fetchWithRetry(API_URL, {}, 3).then(data => { 
         const productSelect = document.getElementById("productSelect");
-        updateSelectOptions(productSelect, data.products, "제품 모델 선택");
+        if(productSelect) updateSelectOptions(productSelect, data.products, "제품 모델 선택");
         ALL_STORES = data.stores; 
         STORE_DATA_MAP = {}; 
         data.stores.forEach(store => { STORE_DATA_MAP[store.name] = store; });
-        document.getElementById("storeInput").placeholder = "매장명, 대리점명, 주소 검색";
+        const storeInput = document.getElementById("storeInput");
+        if(storeInput) storeInput.placeholder = "매장명, 대리점명, 주소 검색";
     }).catch(err => console.error("데이터 로딩 실패")); 
 
     // 2. 약관 전체 동의 로직
@@ -143,45 +141,173 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 6. 차대번호 조회
+    // 6. 차대번호 조회 및 초기화
     const serialInput = document.getElementById("serialNo");
     const serialError = document.getElementById("serialError");
     const stepBadge = document.getElementById("stepBadge");
     const btnCheckSerial = document.getElementById("btnCheckSerial");
+    const btnStep2Next = document.getElementById("btnStep2Next"); // Step 2 다음 버튼
 
     if(btnCheckSerial) btnCheckSerial.addEventListener("click", runSerialCheck);
+    
     if(serialInput) {
-        serialInput.addEventListener("blur", runSerialCheck);
-        serialInput.addEventListener("focus", function() { this.classList.remove("highlight-input"); if(stepBadge) stepBadge.style.display = "none"; });
+        // 입력값 변경 시 인증 상태 초기화
+        serialInput.addEventListener("input", function() {
+            IS_SERIAL_VERIFIED = false;
+            // 다음 단계 버튼 비활성화 (인증 필요)
+            if(btnStep2Next) {
+                btnStep2Next.disabled = true;
+                btnStep2Next.innerHTML = '먼저 조회해주세요 <span class="arrow">→</span>';
+                btnStep2Next.style.backgroundColor = "var(--p-border)";
+                btnStep2Next.style.color = "var(--p-text-ghost)";
+                btnStep2Next.style.cursor = "not-allowed";
+            }
+            serialError.style.display = "none";
+            
+            // 입력창 하이라이트 복구 (시각적 유도)
+            this.classList.add("highlight-input");
+            if(stepBadge) stepBadge.style.display = "block";
+        });
+
         serialInput.addEventListener("keypress", function(e) { if(e.key === 'Enter') { e.preventDefault(); runSerialCheck(); } });
     }
 
     function runSerialCheck() {
         const val = serialInput.value.trim(); 
         if (val.length < 1) {
-            serialError.style.display = "none"; serialError.innerText = ""; setButtonState(true);
-            serialInput.classList.add("highlight-input"); if(stepBadge) stepBadge.style.display = "block";
-            const select = document.getElementById("productSelect"); if(select) select.value = ""; 
+            showAlert("차대번호를 입력해주세요.");
             return; 
         }
-        serialError.style.display = "block"; serialError.style.color = "var(--ci-blue)"; serialError.innerText = "확인 중..."; setButtonState(false);
         
+        serialError.style.display = "block"; 
+        serialError.style.color = "var(--p-primary)"; 
+        serialError.innerText = "확인 중..."; 
+        
+        // 버튼 로딩 상태
+        btnCheckSerial.disabled = true;
+        btnCheckSerial.innerText = "...";
+
         fetchWithRetry(API_URL + "?type=check&no=" + val, {}, 2).then(d => {
+            btnCheckSerial.disabled = false;
+            btnCheckSerial.innerText = "조회";
+
             if (d.status === "ok") { 
-                serialError.style.color = "var(--ci-green)"; serialError.innerText = `✅ 확인됨 (${d.model})`; setButtonState(true); 
-                const select = document.getElementById("productSelect"); if(d.model) select.value = d.model; 
+                IS_SERIAL_VERIFIED = true;
+                serialError.style.color = "var(--p-secondary)"; 
+                serialError.innerText = `✅ 확인되었습니다. (${d.model})`; 
+                
+                // 모델 자동 선택
+                const select = document.getElementById("productSelect"); 
+                if(d.model && select) select.value = d.model; 
+
+                // 하이라이트 제거
+                serialInput.classList.remove("highlight-input");
+                if(stepBadge) stepBadge.style.display = "none";
+
+                // 다음 단계 버튼 활성화
+                if(btnStep2Next) {
+                    btnStep2Next.disabled = false;
+                    btnStep2Next.innerHTML = '인증 완료! 다음 단계로 <span class="arrow">→</span>';
+                    btnStep2Next.style.backgroundColor = "var(--p-primary)";
+                    btnStep2Next.style.color = "#fff";
+                    btnStep2Next.style.cursor = "pointer";
+                }
             } 
-            else { serialError.style.color = "#e74c3c"; serialError.innerText = "❌ " + d.message; setButtonState(false); }
-        }).catch(e => { serialError.innerText = ""; setButtonState(true); });
+            else { 
+                IS_SERIAL_VERIFIED = false;
+                serialError.style.color = "#e74c3c"; 
+                serialError.innerText = "❌ " + d.message; 
+                // 실패 시 다음 버튼 비활성화 유지
+                if(btnStep2Next) {
+                    btnStep2Next.disabled = true;
+                    btnStep2Next.innerHTML = '조회 실패 <span class="arrow">→</span>';
+                    btnStep2Next.style.backgroundColor = "var(--p-border)";
+                    btnStep2Next.style.color = "var(--p-text-ghost)";
+                }
+            }
+        }).catch(e => { 
+            btnCheckSerial.disabled = false;
+            btnCheckSerial.innerText = "조회";
+            serialError.innerText = "서버 통신 오류. 다시 시도해주세요."; 
+        });
     }
 
-    // 7. 등록 신청 버튼 이벤트 연결
+    // 7. 등록 신청 버튼 (최종)
     const submitBtn = document.querySelector(".submit-btn");
     if(submitBtn) {
         submitBtn.addEventListener("click", submitForm);
     }
 });
 
+/**
+ * Stepper Navigation System
+ */
+window.nextStep = function(targetStep) {
+    // 1단계 -> 2단계 이동 시 유효성 검사 (약관)
+    if (targetStep === 2) {
+        if (!validateStep1()) return;
+    }
+    // 2단계 -> 3단계 이동 시 유효성 검사 (차대번호)
+    if (targetStep === 3) {
+        if (!validateStep2()) return;
+    }
+
+    showStep(targetStep);
+}
+
+function showStep(step) {
+    // 모든 스텝 숨기기
+    document.querySelectorAll('.form-step').forEach(el => el.classList.remove('active'));
+    // 대상 스텝 보이기
+    document.getElementById('step' + step).classList.add('active');
+    
+    // 인디케이터 업데이트
+    updateStepperIndicator(step);
+    
+    // 현재 스텝 업데이트
+    CURRENT_STEP = step;
+    
+    // 스크롤 최상단으로 (UX)
+    window.scrollTo(0, 0);
+}
+
+function updateStepperIndicator(step) {
+    // 모든 탭 초기화
+    document.querySelectorAll('.step-item').forEach(el => {
+        el.classList.remove('active', 'complete');
+    });
+
+    for (let i = 1; i <= 3; i++) {
+        const item = document.getElementById('step' + i + '-tab');
+        if (i < step) {
+            item.classList.add('complete');
+        } else if (i === step) {
+            item.classList.add('active');
+        }
+    }
+}
+
+// Step 1 Validation: 약관 동의
+function validateStep1() {
+    const privacy = document.getElementById("privacyAgree").checked;
+    const third = document.getElementById("thirdPartyAgree").checked;
+    const transfer = document.getElementById("transferAgree").checked;
+
+    if (!privacy) { showAlert("개인정보 수집 및 이용에 동의해주세요."); return false; }
+    if (!third) { showAlert("개인정보 제3자 제공에 동의해주세요."); return false; }
+    if (!transfer) { showAlert("개인정보 국외 이전 동의가 필요합니다."); return false; }
+    return true;
+}
+
+// Step 2 Validation: 차대번호 인증
+function validateStep2() {
+    const serialNo = document.getElementById("serialNo").value.trim();
+    if (!serialNo) { showAlert("차대번호를 입력해주세요."); return false; }
+    if (!IS_SERIAL_VERIFIED) { showAlert("차대번호 '조회' 버튼을 눌러 정품 인증을 완료해주세요."); return false; }
+    return true;
+}
+
+// Helper Functions
 function updateSelectOptions(el, items, defText) { 
     el.innerHTML = ""; 
     const opt = document.createElement("option"); 
@@ -196,11 +322,10 @@ function setButtonState(e) {
     const submitBtn = document.querySelector(".submit-btn"); 
     if(submitBtn) {
         submitBtn.disabled = !e; 
-        submitBtn.style.backgroundColor = e ? "var(--ci-blue)" : "#ccc"; 
     }
 }
 
-// 폼 제출 로직
+// 최종 폼 제출 Logic
 function submitForm() {
     const userName = document.getElementById("userName").value;
     const userPhone = document.getElementById("userPhone").value;
@@ -209,19 +334,13 @@ function submitForm() {
     const storeCode = document.getElementById("storeCode").value; 
     const serialNo = document.getElementById("serialNo").value;
     
-    // 약관 동의 체크
-    const privacyAgree = document.getElementById("privacyAgree").checked;
-    const thirdPartyAgree = document.getElementById("thirdPartyAgree").checked;
-    const transferAgree = document.getElementById("transferAgree").checked; // [New]
+    // 약관 상태 재확인
     const marketingAgree = document.getElementById("marketingAgree").checked;
+    const transferAgree = document.getElementById("transferAgree").checked;
     
     const fileInput = document.getElementById("receiptFile");
 
-    if (!privacyAgree) return showAlert("개인정보 수집 및 이용에 동의해야 합니다. (필수)");
-    if (!thirdPartyAgree) return showAlert("개인정보 제3자 제공에 동의해야 합니다. (필수)");
-    if (!transferAgree) return showAlert("개인정보 국외 이전 동의가 필요합니다. (필수)"); // [New]
-    
-    if (!serialNo) return showAlert("제품 번호를 입력하고 확인받으세요.");
+    // 최종 유효성 검사 (Step 3) - 다시 한 번 체크
     if (!userName) return showAlert("이름을 입력해주세요.");
     if (!userPhone) return showAlert("전화번호를 입력해주세요.");
     if (!product) return showAlert("제품 모델을 선택해주세요.");
@@ -229,16 +348,17 @@ function submitForm() {
     if (fileInput.files.length === 0) return showAlert("구매 영수증은 필수 항목입니다.");
     if (fileInput.files[0].size > MAX_FILE_SIZE) return showAlert("파일 용량이 3MB를 초과합니다.");
 
+    // 제출 시작
     setButtonState(false); 
     document.getElementById("loadingArea").style.display = "flex"; 
     document.getElementById("waitText").innerText = "잠시만 기다려주세요."; 
     window.GLOBAL_RETRY_COUNT = 0; 
 
-    // 데이터 패키징 (transferConsent 추가)
+    // 데이터 패키징
     const formData = { 
         userName, userPhone, product, storeName, storeCode, serialNo, 
         marketingConsent: marketingAgree,
-        transferConsent: transferAgree // [New]
+        transferConsent: transferAgree
     };
 
     const file = fileInput.files[0];
@@ -260,6 +380,7 @@ function submitForm() {
                     window.location.href = "./product_check.html?name=" + encodeURIComponent(formData.userName) + "&phone=" + encodeURIComponent(formData.userPhone);
                 });
             } else if (res.message.includes("이미 등록된 제품") && window.GLOBAL_RETRY_COUNT > 0) {
+                // 재시도 메커니즘에 의해 성공한 경우
                 showAlert("✅ (재접속 성공) 제품 등록이 완료되었습니다!\n등록 내역 확인 페이지로 자동 이동합니다.", function() {
                     window.location.href = "./product_check.html?name=" + encodeURIComponent(formData.userName) + "&phone=" + encodeURIComponent(formData.userPhone);
                 });

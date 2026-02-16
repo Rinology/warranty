@@ -18,6 +18,8 @@
   --p-text-sub: #666666;
   --p-text-ghost: #999999;
   --p-bg-body: #f5f7fa;
+  /* Restored for contrast */
+  /* Unified with surface color */
   --p-bg-surface: #ffffff;
   --p-border: #eef2f5;
   --p-border-focus: #2f6286;
@@ -44,6 +46,7 @@
 
 
 /* Dark Mode Class Override */
+html.dark-mode,
 body.dark-mode {
   --p-text-main: #f8f9fa;
   --p-text-sub: #b0b0b0;
@@ -69,6 +72,12 @@ body.dark-mode .sub-text,
 body.dark-mode .modal-close,
 body.dark-mode .terms-header .agree-all-label {
   color: var(--p-text-main);
+}
+
+body.dark-mode .footer-logo img {
+  /* Remove inversion filter to preserve original colors */
+  filter: none;
+  mix-blend-mode: normal;
 }
 
 body.dark-mode .terms-container {
@@ -138,7 +147,8 @@ html {
 }
 
 .modal-box {
-  background: var(--p-bg-surface);
+  background: #ffffff;
+  /* Explicitly white for modals */
   width: 90%;
   max-width: 500px;
   max-height: 80vh;
@@ -257,14 +267,22 @@ html {
 /* Footer (공통) */
 .footer-logo {
   text-align: center;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px dashed #eee;
+  margin-top: auto;
+  /* 콘텐츠 양에 관계없이 최하단 배치 */
+  padding: 40px 0 20px;
+  /* 상하 여백 조정 */
+  display: block;
 }
 
 .footer-logo img {
-  height: 24px;
-  opacity: 0.8;
+  /* [크기 조절] 아래 width 값을 변경하여 로고 크기를 조절할 수 있습니다. */
+  width: 70%;
+  /* 100%에서 약 30% 축소된 70%로 설정 */
+  max-width: 250px;
+  /* PC 등 큰 화면에서 너무 커지지 않도록 최대 너비 제한 */
+  height: auto;
+  margin: 0 auto;
+  display: block;
 }
 
 /* =========================================
@@ -273,13 +291,18 @@ html {
 .main-container {
   max-width: 500px;
   margin: 40px auto;
-  padding: 50px 30px;
+  min-height: calc(100vh - 80px);
+  /* Ensure minimum height */
+  padding: 50px 30px 30px;
+  /* Bottom padding reduced from 50px to 30px */
   background-color: var(--p-bg-surface);
   border-radius: var(--r-radius-md);
   box-shadow: 0 10px 30px var(--p-shadow);
   text-align: center;
   border: 1px solid var(--p-border);
   transition: var(--t-transition);
+  display: flex;
+  flex-direction: column;
 }
 
 .main-title {
@@ -375,11 +398,13 @@ html {
   font-weight: 400;
 }
 
-/* [수정] 메인 페이지 Footer 영역 테두리 제거 */
+/* [수정] 메인 페이지 Footer 영역 테두리 제거 및 여백 최적화 */
 .footer-area {
   margin-top: 50px;
+  /* Restored for better spacing */
   border-top: none;
-  padding-top: 30px;
+  padding-top: 10px;
+  padding-bottom: 20px;
 }
 
 /* 메인 페이지 내부의 footer-logo는 공통 border를 무시하고 초기화 */
@@ -398,11 +423,14 @@ html {
 .inquiry-container {
   max-width: 500px;
   margin: 40px auto;
+  min-height: calc(100vh - 80px);
   padding: 30px;
   background-color: var(--p-bg-surface);
   border-radius: var(--r-radius-md);
   box-shadow: 0 10px 30px var(--p-shadow);
   border: 1px solid var(--p-border);
+  display: flex;
+  flex-direction: column;
 }
 
 .nav-header {
@@ -619,6 +647,11 @@ body.dark-mode .kakao-btn {
   text-align: right;
 }
 
+.inquiry-container .footer-logo {
+  margin-bottom: 0;
+  /* 기존 음수 마진 제거 */
+}
+
 .warranty-section {
   margin-top: 15px;
   padding-top: 15px;
@@ -741,12 +774,21 @@ body.dark-mode .kakao-btn {
 .regist-container {
   max-width: 600px;
   margin: 40px auto;
+  min-height: calc(100vh - 80px);
   padding: 40px;
+  /* Bottom padding reduced */
   background-color: var(--p-bg-surface);
   border-radius: var(--r-radius-md);
   box-shadow: 0 10px 30px var(--p-shadow);
   position: relative;
   border: 1px solid var(--p-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.regist-container .footer-logo {
+  margin-bottom: 0;
+  /* 기존 음수 마진 제거 */
 }
 
 .required-mark {
@@ -1296,9 +1338,19 @@ select:focus {
   .main-container,
   .inquiry-container,
   .regist-container {
-    margin: 15px;
+    margin: 0 auto;
     padding: 30px 20px;
-    border-radius: var(--r-radius-md);
+    border-radius: 0;
+    width: 100%;
+    min-height: 100vh;
+    /* Full screen height on mobile */
+    border: none;
+    box-shadow: none;
+  }
+
+  .footer-logo {
+    margin: 30px auto 0 !important;
+    /* 모바일 하단 여백 정규화 */
   }
 
   .form-row {

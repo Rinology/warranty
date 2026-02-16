@@ -124,8 +124,6 @@ html {
   user-select: none;
   min-height: 100dvh;
   /* Dynamic viewport height for mobile browser compatibility */
-  display: flex;
-  flex-direction: column;
   transition: background-color 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
   box-sizing: border-box;

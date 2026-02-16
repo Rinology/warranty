@@ -1,6 +1,11 @@
 @charset "UTF-8";
 
 /* =========================================
+   0. Font Configuration
+   ========================================= */
+/* Pretendard CDN is loaded via HTML <link> tags */
+
+/* =========================================
    1. 기본 설정 (Variables & Reset)
    ========================================= */
 :root {
@@ -103,7 +108,7 @@ body,
 html {
   margin: 0;
   padding: 0;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
   background-color: var(--p-bg-body);
   color: var(--p-text-main);
   -webkit-user-select: none;

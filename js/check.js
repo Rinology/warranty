@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(res => {
                 loadingArea.style.display = "none";
                 btnSearch.disabled = false;
-                btnSearch.style.backgroundColor = "var(--ci-white)";
+                btnSearch.style.backgroundColor = ""; // 인라인 스타일 제거하여 CSS 기본값으로 복구
 
                 if (res.status === "success") {
                     const list = res.data;
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(e => {
                 loadingArea.style.display = "none";
                 btnSearch.disabled = false;
-                btnSearch.style.backgroundColor = "var(--ci-white)";
+                btnSearch.style.backgroundColor = ""; // 인라인 스타일 제거하여 CSS 기본값으로 복구
                 msgBox.style.display = "block";
                 msgBox.innerHTML = '<span class="error-text">서버 통신 오류가 발생했습니다.<br>잠시 후 다시 시도해주세요.</span>';
             });

@@ -53,7 +53,8 @@ body.dark-mode {
   --p-text-ghost: #707070;
   --p-bg-body: #121212;
   --p-bg-surface: #1e1e1e;
-  --p-border: #333333;
+  --p-border: #555555;
+  /* Improved from #444444 for better visibility */
   --p-border-focus: #5d9cbd;
   --p-shadow: rgba(0, 0, 0, 0.3);
   --p-shadow-hover: rgba(0, 0, 0, 0.5);
@@ -63,7 +64,6 @@ body.dark-mode {
   --p-primary: #5d9cbd;
   /* Lighter navy for better contrast in dark mode */
   --p-primary-hover: #7eb6d4;
-  --p-border: #444444;
 }
 
 /* Dark Mode Specific Overrides for Hardcoded Colors */
@@ -83,6 +83,20 @@ body.dark-mode .footer-logo img {
 body.dark-mode .terms-container {
   background-color: var(--p-bg-surface);
   border-color: var(--p-border);
+}
+
+/* Dark Mode: Fix .btn-search visibility */
+body.dark-mode .btn-search {
+  background-color: #2a2a2a;
+  /* Lighter than surface for contrast */
+  border-color: #666666;
+  /* More visible border */
+}
+
+body.dark-mode .btn-search:hover {
+  background-color: #333333;
+  border-color: var(--p-secondary);
+  color: var(--p-secondary);
 }
 
 /* Dark Mode Toggle Button */

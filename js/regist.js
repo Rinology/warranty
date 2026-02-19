@@ -245,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault();
             if (CURRENT_STEP === 1) {
                 // 1단계에서는 메인으로 이동 (또는 history.back)
-                location.href = './main.html';
+                location.href = './index.html';
             } else {
                 // 그 외 단계에서는 이전 단계로 이동
                 showStep(CURRENT_STEP - 1);

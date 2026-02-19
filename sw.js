@@ -1,7 +1,7 @@
 const CACHE_NAME = 'quali-warranty-v1';
 const ASSETS_TO_CACHE = [
     './',
-    './main.html',
+    './index.html',
     './product_regist.html',
     './product_check.html',
     './css/style.css',

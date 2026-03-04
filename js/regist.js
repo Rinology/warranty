@@ -412,3 +412,36 @@ function submitForm() {
     };
     reader.readAsDataURL(file);
 }
+
+// 차대번호 입력 필터링 및 글자 수 카운터
+document.addEventListener('DOMContentLoaded', function () {
+    const serialInput = document.getElementById('serialNo');
+    const serialCount = document.getElementById('serialCount');
+
+    if (serialInput) {
+        serialInput.addEventListener('input', function (e) {
+            // 1. 숫자가 아닌 문자를 걸러냅니다.
+            let sanitizedValue = this.value.replace(/[^0-9]/g, '');
+
+            // 2. 입력값에 진짜 변화가 생겼을 때만 덮어씁니다. (한글 조합 중 지워지는 현상 방지)
+            if (this.value !== sanitizedValue) {
+                this.value = sanitizedValue;
+            }
+
+            // 3. 글자 수 표시기를 실시간으로 업데이트합니다.
+            if (serialCount) {
+                const currentLength = this.value.length;
+                serialCount.innerText = `${currentLength}자`;
+                
+                // (선택) 13자 이상 입력되면 글자색을 진하게 변경하여 사용자에게 힌트를 줍니다.
+                if (currentLength >= 13) {
+                    serialCount.style.color = "#2f6286"; // 퀄리 메인 컬러
+                    serialCount.style.fontWeight = "bold";
+                } else {
+                    serialCount.style.color = "#888";
+                    serialCount.style.fontWeight = "normal";
+                }
+            }
+        });
+    }
+});

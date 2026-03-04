@@ -78,17 +78,20 @@
       <div class="form-step" id="step2">
         <div class="step-title">제품의 차대번호를 입력해주세요.</div>
         <div class="form-group">
-          <label for="serialNo">제품 번호(차대번호) <span class="required-mark">*</span></label>
+          <label for="serialNo">차대번호 위치안내입니다. <span class="required-mark">*</span></label>
           <div class="serial-guide-box"><img src="./images/Serial_Number_Location.jpg" alt="차대번호 예시">
             <div class="serial-guide-text">💡 제품별로 차대번호 각인 위치가 다릅니다.</div>
           </div>
 
           <div class="input-wrapper">
             <div id="stepBadge" class="step-badge">조회 버튼을 눌러주세요</div>
-            <input type="text" id="serialNo" class="highlight-input" placeholder="차대번호는 숫자만 입력해주세요." autocomplete="off">
+            <input type="text" id="serialNo" class="highlight-input" placeholder="차대번호는 숫자만 입력해주세요." autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="15">
             <button type="button" id="btnCheckSerial" class="check-btn">조회</button>
           </div>
-          <p id="serialError" class="error-msg"></p>
+
+        <div id="serialCount" style="text-align: left; font-size: 13px; color: #888; margin-top: 5px;">0자</div>
+
+<p id="serialError" class="error-msg"></p>
         </div>
         <div class="step-btns">
           <!-- <button type="button" class="back-btn" onclick="nextStep(1)">이전</button> -->

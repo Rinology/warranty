@@ -433,13 +433,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 const currentLength = this.value.length;
                 serialCount.innerText = `${currentLength}자`;
                 
-                // (선택) 13자 이상 입력되면 글자색을 진하게 변경하여 사용자에게 힌트를 줍니다.
-                if (currentLength >= 13) {
-                    serialCount.style.color = "#2f6286"; // 퀄리 메인 컬러
+                // 글자 수에 따른 색상 및 굵기 변경 (0자: 회색 / 1~12자: 빨간색 / 13자 이상: 파란색)
+                if (currentLength === 0) {
+                    serialCount.style.color = "#888";       // 기본 회색
+                    serialCount.style.fontWeight = "normal";
+                } else if (currentLength < 13) {
+                    serialCount.style.color = "#e03131";    // 경고용 빨간색
                     serialCount.style.fontWeight = "bold";
                 } else {
-                    serialCount.style.color = "#888";
-                    serialCount.style.fontWeight = "normal";
+                    serialCount.style.color = "#2f6286";    // 완료용 퀄리 메인 컬러 (파란색)
+                    serialCount.style.fontWeight = "bold";
                 }
             }
         });

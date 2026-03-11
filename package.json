@@ -1,0 +1,9 @@
+{
+  "name": "warranty",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@upstash/redis": "^1.36.4",
+    "vite": "^5.0.0"
+  }
+}

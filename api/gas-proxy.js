@@ -1,6 +1,41 @@
+import { Redis } from '@upstash/redis'
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+})
+
 export default async function handler(req, res) {
   const GAS_URL = process.env.GAS_URL;
   const API_TOKEN = process.env.API_TOKEN;
+  const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
+
+  // 1. Origin 검증
+  const origin = req.headers.origin || req.headers.referer;
+
+  const isLocal = origin && (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1'));
+  
+  if (!isLocal && (!origin || !origin.startsWith(ALLOWED_ORIGIN))) {
+    return res.status(403).json({ result: "error", message: "Forbidden: Invalid Origin" });
+  }
+
+  // 2. Rate Limiting (IP 기반, 1분당 50회)
+  try {
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const identifier = `ratelimit_${ip}`;
+    const current = await redis.incr(identifier);
+    
+    if (current === 1) {
+      await redis.expire(identifier, 60);
+    }
+
+    if (current > 50) {
+      return res.status(429).json({ result: "error", message: "Too Many Requests" });
+    }
+  } catch (redisError) {
+    // Fail-Open: Redis 연결 실패 시에도 서비스 계속 진행
+    console.error('Redis Rate Limit Error:', redisError);
+  }
 
   try {
     const url = new URL(GAS_URL);
@@ -16,11 +51,8 @@ export default async function handler(req, res) {
       method: req.method,
     };
 
-    // [수정된 부분] POST 요청 시 이중 Stringify(포장) 방지
     if (req.method === 'POST') {
-      // req.body가 이미 문자열이면 그대로 쓰고, 객체면 JSON 문자열로 변환합니다.
       options.body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
-      
       options.headers = {
         'Content-Type': 'application/json',
       };

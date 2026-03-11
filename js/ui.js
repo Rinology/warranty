@@ -52,8 +52,20 @@ const RegUI = {
                     RegState.formData.storeCode = store.code;
                     RegState.save();
                     suggestions.style.display = "none";
+                    suggestions.style.display = "none";
                     infoDisplay.style.display = "block";
-                    infoDisplay.innerHTML = `📍 <b>주소:</b> ${store.addr || "없음"}<br>📞 <b>연락처:</b> ${store.phone || "없음"}`;
+                    infoDisplay.innerHTML = ""; // Clear existing content safely
+                    
+                    const addrLabel = document.createElement("b");
+                    addrLabel.textContent = "주소:";
+                    infoDisplay.append("📍 ", addrLabel, ` ${store.addr || "없음"}`);
+                    
+                    infoDisplay.appendChild(document.createElement("br"));
+                    
+                    const phoneLabel = document.createElement("b");
+                    phoneLabel.textContent = "연락처:";
+                    infoDisplay.append("📞 ", phoneLabel, ` ${store.phone || "없음"}`);
+                    
                     storeInput.style.border = "1px solid #ccc";
                 });
                 suggestions.appendChild(li);

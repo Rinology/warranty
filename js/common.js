@@ -71,11 +71,26 @@ async function fetchWithRetry(url, options = {}, retries = 3, backoff = 1000) {
     try {
         // 수정된 url을 그대로 fetch에 넘겨줍니다.
         const response = await fetch(url, options);
-        if (!response.ok) throw new Error("Server Busy");
+        if (!response.ok) {
+            // 400번대 에러(클라이언트 오류 및 보안 차단)는 재시도해도 의미가 없으므로 즉각 중지
+            if (response.status >= 400 && response.status < 500) {
+                let errorMsg = "서버 요청 권한이 없거나 잘못된 요청입니다.";
+                try {
+                    const errorJson = await response.json();
+                    if (errorJson.message) errorMsg = errorJson.message;
+                } catch (e) {}
+                
+                const err = new Error(errorMsg);
+                err.status = response.status;
+                throw err;
+            }
+            throw new Error("Server Busy");
+        }
         const json = await response.json();
         return json;
     } catch (error) {
-        if (retries > 0) {
+        // 이미 400번대 에러로 넘어온 객체(err.status가 있는 경우)는 재시도 건너뜀
+        if (retries > 0 && !error.status) {
             const waitText = document.getElementById("waitText");
             if (waitText) waitText.innerText = `접속량이 많아 대기 중입니다... (${retries})`;
 

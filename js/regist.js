@@ -249,14 +249,20 @@ document.addEventListener("DOMContentLoaded", function () {
         }).catch(e => {
             btnCheckSerial.disabled = false;
             btnCheckSerial.innerText = "조회";
-            serialError.innerText = "서버 통신 오류. 다시 시도해주세요.";
+            if (e.message && (e.message.includes("reCAPTCHA") || e.message.includes("보안 토큰"))) {
+                serialError.innerText = "❌ " + e.message;
+            } else if (e.status >= 400 && e.status < 500) {
+                serialError.innerText = "❌ 조회 권한이 거부되었습니다.";
+            } else {
+                serialError.innerText = "서버 통신 오류. 다시 시도해주세요.";
+            }
         });
     }
 
     // 8. 제출 로직
     const submitBtn = document.querySelector(".submit-btn");
     if (submitBtn) {
-        submitBtn.addEventListener("click", function () {
+        submitBtn.addEventListener("click", async function () {
             const fileInput = document.getElementById("receiptFile");
             if (!RegValidation.final(fileInput)) return;
 
@@ -279,36 +285,55 @@ document.addEventListener("DOMContentLoaded", function () {
             payload.serialImageData = RegState.serialImageBase64.split(",")[1];
 
             const file = fileInput.files[0];
-            const reader = new FileReader();
 
-            reader.onload = function (e) {
+            try {
+                let fileDataStr = "";
+                // 이미지는 압축(최대 너비 800px), PDF는 원본 그대로 Base64 변환
+                if (file.type.startsWith('image/')) {
+                    const compressedBase64 = await Utils.compressImage(file);
+                    fileDataStr = compressedBase64.split(",")[1];
+                } else {
+                    fileDataStr = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = e => resolve(e.target.result.split(",")[1]);
+                        reader.onerror = () => reject(new Error("파일 읽기 오류"));
+                        reader.readAsDataURL(file);
+                    });
+                }
+
                 payload.fileName = file.name;
                 payload.mimeType = file.type;
-                payload.fileData = e.target.result.split(",")[1];
+                payload.fileData = fileDataStr;
 
-                RegAPI.submitForm(payload).then(res => {
-                    if (res.result === "success") {
-                        RegState.clear();
-                        RegState.serialImageBase64 = null; // 보내고 나면 메모리에서 정리
-                        Utils.showAlert("✅ 제품 등록이 완료되었습니다!\n등록 내역 확인 페이지로 자동 이동합니다.", function () {
-                            window.location.href = "./product_check.html?name=" + encodeURIComponent(payload.userName) + "&phone=" + encodeURIComponent(payload.userPhone);
-                        });
-                    } else if (res.message.includes("이미 등록된 제품") && window.GLOBAL_RETRY_COUNT > 0) {
-                        RegState.clear();
-                        RegState.serialImageBase64 = null;
-                        Utils.showAlert("✅ (재접속 성공) 제품 등록이 완료되었습니다!\n등록 내역 확인 페이지로 자동 이동합니다.", function () {
-                            window.location.href = "./product_check.html?name=" + encodeURIComponent(payload.userName) + "&phone=" + encodeURIComponent(payload.userPhone);
-                        });
-                    } else {
-                        Utils.showAlert("오류 발생: " + res.message);
-                        RegUI.setLoadingState(false);
-                    }
-                }).catch(e => {
-                    Utils.showAlert("접속자가 많아 등록에 실패했습니다.\n잠시 후 다시 시도해주세요.");
+                const res = await RegAPI.submitForm(payload);
+
+                if (res.result === "success") {
+                    RegState.clear();
+                    RegState.serialImageBase64 = null; // 보내고 나면 메모리에서 정리
+                    Utils.showAlert("✅ 제품 등록이 완료되었습니다!\n등록 내역 확인 페이지로 자동 이동합니다.", function () {
+                        window.location.href = "./product_check.html?name=" + encodeURIComponent(payload.userName) + "&phone=" + encodeURIComponent(payload.userPhone);
+                    });
+                } else if (res.message && res.message.includes("이미 등록된 제품") && window.GLOBAL_RETRY_COUNT > 0) {
+                    RegState.clear();
+                    RegState.serialImageBase64 = null;
+                    Utils.showAlert("✅ (재접속 성공) 제품 등록이 완료되었습니다!\n등록 내역 확인 페이지로 자동 이동합니다.", function () {
+                        window.location.href = "./product_check.html?name=" + encodeURIComponent(payload.userName) + "&phone=" + encodeURIComponent(payload.userPhone);
+                    });
+                } else {
+                    Utils.showAlert("오류 발생: " + res.message);
                     RegUI.setLoadingState(false);
-                });
-            };
-            reader.readAsDataURL(file);
+                }
+
+            } catch (e) {
+                RegUI.setLoadingState(false);
+                if (e.message && (e.message.includes("reCAPTCHA") || e.message.includes("보안 토큰"))) {
+                    Utils.showAlert("보안 인증 실패:\n" + e.message);
+                } else if (e.status >= 400 && e.status < 500) {
+                    Utils.showAlert("❌ 비정상적인 접근이 감지되었거나 잘못된 요청입니다.\n(새로고침 후 다시 시도해주세요.)");
+                } else {
+                    Utils.showAlert("접속자가 많아 등록에 실패했습니다.\n잠시 후 다시 시도해주세요.");
+                }
+            }
         });
     }
 

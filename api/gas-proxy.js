@@ -55,7 +55,7 @@ export default async function handler(req, res) {
     });
     const verifyData = await verifyResponse.json();
 
-    if (!verifyData.success || verifyData.score < 0.5) {
+    if (!verifyData.success || verifyData.score < 0.3) {
       console.error('reCAPTCHA verification failed:', verifyData);
       return res.status(403).json({ result: "error", message: "Forbidden: 비정상적인 접근이 감지되었습니다." });
     }

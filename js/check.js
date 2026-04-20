@@ -108,8 +108,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const year = data.year || "2026";
         const dateStr = formatDate(data.date);
 
-        let tFrame = "2년", tMotor = "1년", tCont = "6개월";
-        if (year === "2025") { tFrame = "1년"; tMotor = "6개월"; tCont = "6개월"; }
+        let tFrame = "1년", tMotor = "6개월", tCont = "6개월";
+        if (year === "2026") { tFrame = "2년"; tMotor = "1년"; tCont = "6개월"; }
 
         let specialBadgeHTML = "";
         if (data.isSpecial) {

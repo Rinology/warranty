@@ -1342,18 +1342,102 @@ select:focus {
   text-align: center;
 }
 
-.serial-guide-box img {
-  max-width: 100%;
+/* [NEW] 차대번호 안내 슬라이더 */
+.serial-guide-slider {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
   border-radius: 4px;
   border: 1px solid var(--p-border);
   margin-bottom: 8px;
 }
 
+.slider-track {
+  display: flex;
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  width: 100%;
+}
+
+.slider-slide {
+  min-width: 100%;
+  box-sizing: border-box;
+  aspect-ratio: 1000 / 750; /* 1000x750 큼직한 비율 설정 */
+  background-color: #f5f5f5;
+}
+
+.slider-slide img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover; /* 이미지가 1000x750 상자에 꽉 차도록 설정 */
+}
+
+/* 하단 컨트롤 영역 (화살표, 텍스트, 점) */
+.slider-controls {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 화살표와 텍스트를 나란히 배치 */
+.slider-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.slider-btn {
+  background-color: var(--p-bg-surface);
+  color: var(--p-text-main);
+  border: 1px solid var(--p-border);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.slider-btn:hover {
+  background-color: var(--p-primary);
+  color: white;
+  border-color: var(--p-primary);
+}
+
 .serial-guide-text {
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--p-primary);
-  margin-top: 5px;
   font-weight: 700;
+  margin: 0;
+}
+
+/* oooo (인디케이터) 점 */
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.slider-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ddd;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.slider-dot.active {
+  background-color: var(--p-primary);
+  transform: scale(1.2);
 }
 
 .error-msg {

@@ -350,6 +350,42 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+    // 10. 차대번호 위치안내 슬라이더
+    const sliderTrack = document.getElementById("serialGuideTrack");
+    const prevBtn = document.getElementById("sliderPrevBtn");
+    const nextBtn = document.getElementById("sliderNextBtn");
+    const dots = document.querySelectorAll(".slider-dot");
+    let currentSlide = 0;
+    const totalSlides = 4;
+
+    function updateSlider() {
+        if (!sliderTrack) return;
+        sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+        dots.forEach((dot, index) => {
+            if (index === currentSlide) dot.classList.add("active");
+            else dot.classList.remove("active");
+        });
+    }
+
+    if (prevBtn && nextBtn) {
+        prevBtn.addEventListener("click", () => {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateSlider();
+        });
+        nextBtn.addEventListener("click", () => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateSlider();
+        });
+    }
+
+    if (dots.length > 0) {
+        dots.forEach(dot => {
+            dot.addEventListener("click", (e) => {
+                currentSlide = parseInt(e.target.getAttribute("data-index"));
+                updateSlider();
+            });
+        });
+    }
 });
 
 // 전역 스코프 함수 유지 (HTML 인라인 이벤트 처리를 위함)

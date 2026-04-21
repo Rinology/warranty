@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 serialCount.innerText = `${len}자`;
                 if (len === 0) {
                     serialCount.style.color = "#888"; serialCount.style.fontWeight = "normal";
-                } else if (len < 13) {
+                } else if (len < 15) {
                     serialCount.style.color = "#e03131"; serialCount.style.fontWeight = "bold";
                 } else {
                     serialCount.style.color = "#2f6286"; serialCount.style.fontWeight = "bold";
@@ -201,7 +201,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function runSerialCheck() {
         const val = serialInput.value.trim();
-        if (val.length < 1) return Utils.showAlert("차대번호를 입력해주세요.");
+        if (val.length === 0) return Utils.showAlert("차대번호를 입력해주세요.");
+        if (val.length !== 15) return Utils.showAlert("차대번호는 정확히 15자리를 입력해주세요.");
 
         serialError.style.display = "block";
         serialError.style.color = "var(--p-primary)";

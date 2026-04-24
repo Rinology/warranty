@@ -103,18 +103,9 @@ document.addEventListener("DOMContentLoaded", function () {
         btnSafetyCheck.innerText = "진단 중...";
         loadingArea.style.display = "flex";
 
-        // 임시 로컬 테스트용 더미 로직 (실제 배포 전 확인용)
+        // 실제 API 연동 (GAS 백엔드 호출)
         try {
-            // const response = await RegAPI.checkSafety(val);
-            
-            // 로컬 테스트용 가짜 응답 생성 (1초 로딩 효과)
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            let response = { status: "unknown" };
-            if (val === "111111111111111") {
-                response.status = "danger";
-            } else if (val === "222222222222222") {
-                response.status = "safe";
-            }
+            const response = await RegAPI.checkSafety(val);
             
             loadingArea.style.display = "none";
             btnSafetyCheck.disabled = false;

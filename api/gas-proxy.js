@@ -47,18 +47,23 @@ export default async function handler(req, res) {
   }
 
   try {
-    const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
-    const verifyUrl = `https://www.google.com/recaptcha/api/siteverify`;
-    const verifyResponse = await fetch(verifyUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `secret=${RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`
-    });
-    const verifyData = await verifyResponse.json();
+    // 로컬 개발 환경일 경우 reCAPTCHA 검증을 완전히 생략합니다.
+    if (isLocal) {
+      console.log("Local env: Skipping reCAPTCHA verification entirely.");
+    } else {
+      const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
+      const verifyUrl = `https://www.google.com/recaptcha/api/siteverify`;
+      const verifyResponse = await fetch(verifyUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=${RECAPTCHA_SECRET_KEY}&response=${encodeURIComponent(recaptchaToken)}`
+      });
+      const verifyData = await verifyResponse.json();
 
-    if (!verifyData.success || verifyData.score < 0.3) {
-      console.error('reCAPTCHA verification failed:', verifyData);
-      return res.status(403).json({ result: "error", message: "Forbidden: 비정상적인 접근이 감지되었습니다." });
+      if (!verifyData.success || verifyData.score < 0.3) {
+        console.error('reCAPTCHA verification failed:', verifyData);
+        return res.status(403).json({ result: "error", message: "Forbidden: 비정상적인 접근이 감지되었습니다." });
+      }
     }
   } catch (error) {
     console.error('reCAPTCHA error:', error);

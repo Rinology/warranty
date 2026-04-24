@@ -113,35 +113,41 @@ document.addEventListener("DOMContentLoaded", function () {
             resultBox.style.display = "block";
 
             if (response.status === "danger") {
-                // 대상 (위험)
-                resultBox.style.backgroundColor = "#fdecea";
-                resultBox.style.border = "1px solid #e74c3c";
+                // 대상 (무상 점검 대상 - 긍정적인 혜택의 느낌으로 따뜻한 오렌지 톤)
+                resultBox.style.backgroundColor = "#fff3e0";
+                resultBox.style.border = "1px solid #ff9800";
                 resultBox.innerHTML = `
-                    <div style="text-align:center; font-size:40px; margin-bottom:10px;">🚨</div>
-                    <h3 style="color:#c0392b; text-align:center; margin-bottom:15px; font-weight:900;">안전성 검사 대상입니다.</h3>
+                    <h3 style="color:#e65100; text-align:center; margin-bottom:10px; font-weight:900;">무상 예방 점검 대상입니다</h3>
+                    <p style="color:#5d4037; font-size:14px; line-height:1.5; text-align:center; font-weight:700; margin-bottom:15px;">
+                        안전하고 쾌적한 라이딩을 위해<br>카카오톡 상담 후 안전성 진단을 꼭 받아보세요!
+                    </p>
                     <div style="text-align:center; margin-top:20px;">
-                        <a href="#" class="kakao-btn" style="display:inline-block; padding: 12px 20px; text-decoration:none; margin-bottom:0;" onclick="window.copyAndGoKakao(event, '${val}')">💬 카카오톡 채널 상담 및 수리 예약하기</a>
+                        <a href="#" class="kakao-btn" style="display:inline-block; padding: 12px 20px; text-decoration:none; margin-bottom:0;" onclick="window.copyAndGoKakao(event, '${val}')">카카오톡 채널 상담 및 수리 예약하기</a>
                     </div>
                 `;
             } else if (response.status === "safe") {
-                // 안전
-                resultBox.style.backgroundColor = "#eafaf1";
-                resultBox.style.border = "1px solid #2ecc71";
+                // 안전 (비대상 - 차분하고 안정적인 민트/그레이 톤)
+                resultBox.style.backgroundColor = "#f0fdf4";
+                resultBox.style.border = "1px solid #86efac";
                 resultBox.innerHTML = `
-                    <div style="text-align:center; font-size:40px; margin-bottom:10px;">✅</div>
-                    <h3 style="color:#27ae60; text-align:center; margin-bottom:0; font-weight:900;">안전성 정상 제품입니다.</h3>
+                    <h3 style="color:#166534; text-align:center; margin-bottom:10px; font-weight:900;">무상 점검 대상이 아닙니다</h3>
+                    <p style="color:#14532d; font-size:14px; line-height:1.5; text-align:center; font-weight:700; margin-bottom:0;">
+                        고객님의 제품은 본 캠페인의 예방 점검 대상 모델이 아닙니다.<br>안심하고 즐거운 라이딩을 이어가세요!
+                    </p>
                 `;
             } else if (response.status === "unknown") {
-                // 미확인
-                resultBox.style.backgroundColor = "#fdf2e9";
-                resultBox.style.border = "1px solid #e67e22";
+                // 미확인 (단순 안내 - 중립적인 그레이/블루 톤)
+                resultBox.style.backgroundColor = "#f8fafc";
+                resultBox.style.border = "1px solid #cbd5e1";
                 resultBox.innerHTML = `
-                    <div style="text-align:center; font-size:40px; margin-bottom:10px;">❓</div>
-                    <h3 style="color:#d35400; text-align:center; margin-bottom:15px; font-weight:900;">정보를 찾을 수 없습니다.</h3>
-                    <p style="color:#e67e22; font-size:14px; line-height:1.6; text-align:center; font-weight:700;">
-                        입력하신 차대번호 내역을 찾을 수 없거나 아직 등록되지 않았습니다.<br>
-                        번호를 다시 한 번 확인해 주시거나 카카오톡 채널로 문의해 주세요.
+                    <h3 style="color:#334155; text-align:center; margin-bottom:10px; font-weight:900;">정보를 찾을 수 없습니다</h3>
+                    <p style="color:#475569; font-size:14px; line-height:1.6; text-align:center; font-weight:700; margin-bottom:15px; word-break:keep-all;">
+                        입력하신 번호와 일치하는 차대번호가 없습니다.<br>
+                        오타가 있을 수 있으니 다시 한 번 확인해 주세요.
                     </p>
+                    <div style="text-align:center; margin-top:20px;">
+                        <a href="#" class="kakao-btn" style="display:inline-block; padding: 12px 20px; text-decoration:none; margin-bottom:0;" onclick="window.copyAndGoKakao(event, '${val}')">카카오톡 채널로 문의하기</a>
+                    </div>
                 `;
             } else {
                 alert(response.message || "알 수 없는 오류가 발생했습니다.");

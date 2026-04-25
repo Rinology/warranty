@@ -37,8 +37,8 @@ const RegAPI = {
         return fetchWithRetry(`${API_URL}?type=check&no=${serialNo}`, { headers }, 2);
     },
 
-    checkSafety: async function (serialNo) {
-        const token = await getRecaptchaToken('checkSafety');
+    checkCampaign: async function (serialNo) {
+        const token = await getRecaptchaToken('checkCampaign');
         const headers = { 'x-recaptcha-token': token };
         return fetchWithRetry(`${API_URL}?type=safety_check&no=${serialNo}`, { headers }, 2);
     },

@@ -47,7 +47,7 @@ window.copyAndGoKakao = function(e, serial) {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
-    const btnSafetyCheck = document.getElementById("btnSafetyCheck");
+    const btnCampaignCheck = document.getElementById("btnCampaignCheck");
     const serialInput = document.getElementById("serialInput");
     const loadingArea = document.getElementById("loadingArea");
     const resultBox = document.getElementById("resultBox");
@@ -74,16 +74,16 @@ document.addEventListener("DOMContentLoaded", function () {
         serialInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                checkSafety();
+                checkCampaign();
             }
         });
     }
 
-    if (btnSafetyCheck) {
-        btnSafetyCheck.addEventListener("click", checkSafety);
+    if (btnCampaignCheck) {
+        btnCampaignCheck.addEventListener("click", checkCampaign);
     }
 
-    async function checkSafety() {
+    async function checkCampaign() {
         const val = serialInput.value.trim();
         
         if (!val) {
@@ -99,17 +99,17 @@ document.addEventListener("DOMContentLoaded", function () {
         // 초기화
         resultBox.style.display = "none";
         resultBox.innerHTML = "";
-        btnSafetyCheck.disabled = true;
-        btnSafetyCheck.innerText = "진단 중...";
+        btnCampaignCheck.disabled = true;
+        btnCampaignCheck.innerText = "진단 중...";
         loadingArea.style.display = "flex";
 
         // 실제 API 연동 (GAS 백엔드 호출)
         try {
-            const response = await RegAPI.checkSafety(val);
+            const response = await RegAPI.checkCampaign(val);
             
             loadingArea.style.display = "none";
-            btnSafetyCheck.disabled = false;
-            btnSafetyCheck.innerText = "진단하기";
+            btnCampaignCheck.disabled = false;
+            btnCampaignCheck.innerText = "진단하기";
             resultBox.style.display = "block";
 
             if (response.status === "danger") {
@@ -156,8 +156,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         } catch (error) {
             loadingArea.style.display = "none";
-            btnSafetyCheck.disabled = false;
-            btnSafetyCheck.innerText = "진단하기";
+            btnCampaignCheck.disabled = false;
+            btnCampaignCheck.innerText = "진단하기";
             alert("조회 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.\n" + error.message);
         }
     }

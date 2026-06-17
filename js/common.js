@@ -33,7 +33,7 @@ function initTheme() {
 function updateFooterLogo(isDark) {
     const logo = document.getElementById('footerLogo');
     if (logo) {
-        logo.src = isDark ? './images/Xtron_x_Qualisports_Logo_White.png' : './images/Xtron_x_Qualisports_Logo_Black.png';
+        logo.src = isDark ? './images/Xtron_x_Qualisports_Logo_White.webp' : './images/Xtron_x_Qualisports_Logo_Black.webp';
     }
 }
 

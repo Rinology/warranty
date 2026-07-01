@@ -11,4 +11,4 @@ node_modules/
 .vercel
 
 #임시 gas코드
-gas.txt
+GAS.text

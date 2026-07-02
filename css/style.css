@@ -1,42 +1,73 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 
 /* =========================================
-   0. Font Configuration (Paperlogy)
+   0. Font Configuration (Paperozi)
    ========================================= */
+
 @font-face {
-  font-family: 'Paperlogy';
-  src: url('../fonts/Paperlogy-1.000/Paperlogy-4Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-1Thin.woff2') format('woff2');
+    font-weight: 100;
+    font-display: swap;
 }
 
 @font-face {
-  font-family: 'Paperlogy';
-  src: url('../fonts/Paperlogy-1.000/Paperlogy-5Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-2ExtraLight.woff2') format('woff2');
+    font-weight: 200;
+    font-display: swap;
 }
 
 @font-face {
-  font-family: 'Paperlogy';
-  src: url('../fonts/Paperlogy-1.000/Paperlogy-7Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-3Light.woff2') format('woff2');
+    font-weight: 300;
+    font-display: swap;
 }
 
 @font-face {
-  font-family: 'Paperlogy';
-  src: url('../fonts/Paperlogy-1.000/Paperlogy-8ExtraBold.woff2') format('woff2');
-  font-weight: 800;
-  font-style: normal;
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
 }
 
 @font-face {
-  font-family: 'Paperlogy';
-  src: url('../fonts/Paperlogy-1.000/Paperlogy-9Black.woff2') format('woff2');
-  font-weight: 900;
-  font-style: normal;
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-5Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-display: swap;
 }
+
+@font-face {
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-6SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Paperozi';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-9Black.woff2') format('woff2');
+    font-weight: 900;
+    font-display: swap;
+}
+
+
 
 /* =========================================
    1. 기본 설정 (Variables & Reset)
@@ -162,7 +193,7 @@ body,
 html {
   margin: 0;
   padding: 0;
-  font-family: 'Paperlogy', sans-serif;
+  font-family: 'Paperozi', sans-serif;
   font-weight: 400;
   /* Default weight */
   background-color: var(--p-bg-body);
@@ -251,7 +282,7 @@ html {
   color: var(--p-text-main);
   white-space: pre-wrap;
   text-align: left;
-  font-family: 'Paperlogy', sans-serif;
+  font-family: 'Paperozi', sans-serif;
 }
 
 /* 약관/동의서 모달 전용 스타일 */
@@ -302,7 +333,7 @@ html {
   border-radius: var(--r-radius-sm);
   cursor: pointer;
   font-weight: 700;
-  font-family: 'Paperlogy', sans-serif;
+  font-family: 'Paperozi', sans-serif;
   transition: var(--t-transition);
 }
 
@@ -465,7 +496,7 @@ html {
   border: 1px solid var(--p-border);
   transition: var(--t-transition);
   cursor: pointer;
-  font-family: 'Paperlogy', sans-serif;
+  font-family: 'Paperozi', sans-serif;
 }
 
 .terms-btn:hover {
@@ -567,7 +598,7 @@ html {
   align-items: center;
   padding: 5px 0;
   transition: color 0.3s;
-  font-family: 'Paperlogy', sans-serif;
+  font-family: 'Paperozi', sans-serif;
 }
 
 .back-btn-top:hover {
@@ -679,7 +710,7 @@ body.dark-mode .kakao-btn {
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
-  font-family: 'Paperlogy', sans-serif;
+  font-family: 'Paperozi', sans-serif;
   transition: var(--t-transition);
   position: relative;
   overflow: hidden;
@@ -1001,7 +1032,7 @@ input[type="file"] {
   font-size: 15px;
   box-sizing: border-box;
   transition: var(--t-transition);
-  font-family: 'Paperlogy', sans-serif;
+  font-family: 'Paperozi', sans-serif;
 }
 
 input:focus,

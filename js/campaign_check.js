@@ -213,6 +213,13 @@ document.addEventListener("DOMContentLoaded", function () {
         serialImageFile.addEventListener("change", async function () {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0];
+                if (!Utils.isValidImageFile(file)) {
+                    Utils.showAlert("❌ JPG, JPEG, PNG 이미지 파일만 업로드 가능합니다!");
+                    this.value = "";
+                    serialImageBase64 = null;
+                    if (serialPreviewBox) serialPreviewBox.style.display = "none";
+                    return;
+                }
                 if (file.size > Utils.MAX_FILE_SIZE) {
                     Utils.showAlert("❌ 파일 용량이 3MB를 초과합니다!\n용량을 줄여서 다시 올려주세요.");
                     this.value = "";
@@ -242,6 +249,13 @@ document.addEventListener("DOMContentLoaded", function () {
         damageImageFile.addEventListener("change", async function () {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0];
+                if (!Utils.isValidImageFile(file)) {
+                    Utils.showAlert("❌ JPG, JPEG, PNG 이미지 파일만 업로드 가능합니다!");
+                    this.value = "";
+                    damageImageBase64 = null;
+                    if (damagePreviewBox) damagePreviewBox.style.display = "none";
+                    return;
+                }
                 if (file.size > Utils.MAX_FILE_SIZE) {
                     Utils.showAlert("❌ 파일 용량이 3MB를 초과합니다!\n용량을 줄여서 다시 올려주세요.");
                     this.value = "";

@@ -79,7 +79,7 @@
           <!-- 차대번호 사진 첨부 (필수) -->
           <div style="flex: 1; min-width: 180px;">
             <label for="serialImageFile">차대번호 사진 첨부 <span class="required-mark">*</span></label>
-            <input type="file" id="serialImageFile" accept="image/*">
+            <input type="file" id="serialImageFile" accept=".jpg,.jpeg,.png,image/jpeg,image/png">
             <div id="serialPreviewBox"
               style="display: none; margin-top: 10px; border: 1px solid var(--p-border); padding: 8px; border-radius: var(--r-radius-sm); text-align: center;">
               <p style="font-size: 11px; color: var(--p-text-muted); margin-bottom: 5px;">📷 차대번호 사진 (필수)</p>
@@ -91,7 +91,7 @@
           <!-- 파손여부 사진 첨부 (선택) -->
           <div style="flex: 1; min-width: 180px;">
             <label for="damageImageFile">파손여부 사진 첨부 <span class="optional-mark">(선택)</span></label>
-            <input type="file" id="damageImageFile" accept="image/*">
+            <input type="file" id="damageImageFile" accept=".jpg,.jpeg,.png,image/jpeg,image/png">
             <div id="damagePreviewBox"
               style="display: none; margin-top: 10px; border: 1px solid var(--p-border); padding: 8px; border-radius: var(--r-radius-sm); text-align: center;">
               <p style="font-size: 11px; color: var(--p-text-muted); margin-bottom: 5px;">🔍 파손여부 사진 (선택)</p>
@@ -101,7 +101,7 @@
           </div>
         </div>
         <div class="file-info-text" style="margin-top: 8px; font-size: 12px; color: #888;">
-          * 차대번호 사진은 필수이며, 파손 부위가 있는 경우 파손여부 사진을 함께 첨부해 주세요. (3MB 이하 이미지)
+          * 차대번호 사진은 필수이며, 파손 부위가 있는 경우 파손여부 사진을 함께 첨부해 주세요. (3MB 이하의 JPG, JPEG, PNG 이미지)
         </div>
       </div>
 

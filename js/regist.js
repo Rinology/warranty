@@ -55,7 +55,14 @@ document.addEventListener("DOMContentLoaded", function () {
     if (receiptFile) {
         receiptFile.addEventListener("change", function () {
             if (this.files.length > 0) {
-                if (this.files[0].size > Utils.MAX_FILE_SIZE) {
+                const file = this.files[0];
+                if (!Utils.isValidImageFile(file)) {
+                    Utils.showAlert("❌ JPG, JPEG, PNG 이미지 파일만 업로드 가능합니다!");
+                    this.value = "";
+                    if (receiptPreviewBox) receiptPreviewBox.style.display = "none";
+                    return;
+                }
+                if (file.size > Utils.MAX_FILE_SIZE) {
                     Utils.showAlert("❌ 파일 용량이 3MB를 초과합니다!\n용량을 줄여서 다시 올려주세요.");
                     this.value = "";
                     if (receiptPreviewBox) receiptPreviewBox.style.display = "none";
@@ -67,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     previewImg.style.display = "block"; // CSS의 display:none 덮어쓰기
                     if (receiptPreviewBox) receiptPreviewBox.style.display = "block";
                 }
-                reader.readAsDataURL(this.files[0]);
+                reader.readAsDataURL(file);
             } else {
                 if (receiptPreviewBox) receiptPreviewBox.style.display = "none";
             }
@@ -175,9 +182,19 @@ document.addEventListener("DOMContentLoaded", function () {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0];
 
+                if (!Utils.isValidImageFile(file)) {
+                    Utils.showAlert("❌ JPG, JPEG, PNG 이미지 파일만 업로드 가능합니다!");
+                    this.value = "";
+                    RegState.serialImageBase64 = null;
+                    if (step3SerialPreviewBox) step3SerialPreviewBox.style.display = "none";
+                    return;
+                }
+
                 if (file.size > Utils.MAX_FILE_SIZE) {
                     Utils.showAlert("❌ 파일 용량이 3MB를 초과합니다!\n용량을 줄여서 다시 올려주세요.");
                     this.value = "";
+                    RegState.serialImageBase64 = null;
+                    if (step3SerialPreviewBox) step3SerialPreviewBox.style.display = "none";
                     return;
                 }
 
@@ -195,6 +212,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.error("Image compression error:", error);
                     Utils.showAlert("사진 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
                 }
+            } else {
+                RegState.serialImageBase64 = null;
+                if (step3SerialPreviewBox) step3SerialPreviewBox.style.display = "none";
             }
         });
     }
@@ -288,19 +308,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const file = fileInput.files[0];
 
             try {
-                let fileDataStr = "";
-                // 이미지는 압축(최대 너비 800px), PDF는 원본 그대로 Base64 변환
-                if (file.type.startsWith('image/')) {
-                    const compressedBase64 = await Utils.compressImage(file);
-                    fileDataStr = compressedBase64.split(",")[1];
-                } else {
-                    fileDataStr = await new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = e => resolve(e.target.result.split(",")[1]);
-                        reader.onerror = () => reject(new Error("파일 읽기 오류"));
-                        reader.readAsDataURL(file);
-                    });
-                }
+                // 이미지 압축(최대 너비 800px) 후 Base64 변환
+                const compressedBase64 = await Utils.compressImage(file);
+                const fileDataStr = compressedBase64.split(",")[1];
 
                 payload.fileName = file.name;
                 payload.mimeType = file.type;

@@ -26,6 +26,13 @@ const Utils = {
         return val.replace(/[^0-9]/g, '');
     },
 
+    isValidImageFile: function (file) {
+        if (!file) return false;
+        const validTypes = ['image/jpeg', 'image/png'];
+        const validExt = /\.(jpe?g|png)$/i.test(file.name || '');
+        return validTypes.includes(file.type) && validExt;
+    },
+
     compressImage: function (fileOrDataUrl) {
         return new Promise((resolve, reject) => {
             const img = new Image();

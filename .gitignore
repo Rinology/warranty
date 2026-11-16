@@ -12,3 +12,4 @@ node_modules/
 
 #임시 gas코드
 GAS.text
+GAS_migrate.text
